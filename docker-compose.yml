@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-ticktok
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USERNAME: postgres
+      POSTGRES_DB: ticktock
+    ports:
+      - 5432:5432
+    networks:
+      - ticktok-workspace
+    volumes:
+      - db_data_ticktok:/var/lib/postgresql/data
+
+  ticktok-api:
+    container_name: ticktok-api-dev
+    build:
+      context: api
+      dockerfile: ../Dockerfile.api
+      target: dev
+    working_dir: /app
+    networks:
+      - ticktok-workspace
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    command: [sh, -c, 'npm run start:dev']
+    volumes:
+      - ./api/:/app
+      - /app/node_modules
+
+  ticktok-client:
+    container_name: ticktok-client-dev
+    build:
+      context: client
+      dockerfile: ../Dockerfile.client
+      target: dev
+    depends_on:
+      - postgres
+      - ticktok-api
+    volumes:
+      - ./client/:/app
+      - /app/node_modules
+    networks:
+      - ticktok-workspace
+    ports:
+      - '5173:5173'
+
+networks:
+  ticktok-workspace:
+volumes:
+  db_data_ticktok:
