@@ -40,8 +40,8 @@ export class RegisterResponse {
 
 @ObjectType()
 export class LoginResponse {
-  @Field(() => UserResponseStrict, { nullable: true })
-  user?: UserResponseStrict;
+  @Field(() => UserResponseStrict)
+  user: UserResponseStrict;
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
 }

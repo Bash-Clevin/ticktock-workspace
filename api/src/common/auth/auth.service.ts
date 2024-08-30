@@ -1,12 +1,17 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 
-import { Response, Request } from 'express';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-import { User } from 'src/models/user/entity/user.entity';
-import { LoginInputDto, RegisterInputDto } from './dto/auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
+import { Request, Response } from 'express';
+import { PrismaService } from '../prisma/prisma.service';
+import { UserResponseStrict } from './auth.types';
+import { LoginDto, RegisterDto } from './dto/auth.dto';
 @Injectable()
 export class AuthService {
   private readonly refresh_cookie_name: string;
@@ -24,7 +29,7 @@ export class AuthService {
   }
 
   async refreshToken(req: Request, res: Response): Promise<string> {
-    const refreshToken = req.cookies(this.refresh_cookie_name);
+    const refreshToken = req.cookies[this.refresh_cookie_name];
 
     if (!refreshToken) {
       this.logger.error('Missing refresh token');
@@ -36,32 +41,34 @@ export class AuthService {
       payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
       });
-
-      const existingUser = await this.prisma.user.findUnique({
-        where: { id: payload.sub },
-      });
-
-      if (!existingUser) {
-        throw new UnauthorizedException('Invalid token');
-      }
-
-      const expiresIn = 15000;
-      const expiration = Math.floor(Date.now() / 1000) + expiresIn;
-      const accessToken = this.jwtService.sign(
-        { ...payload, exp: expiration },
-        { secret: this.configService.get<string>('ACCESS_TOKEN_SECRET') },
-      );
-
-      res.cookie(this.access_cookie_name, accessToken, { httpOnly: true });
-      return accessToken;
     } catch (err) {
       this.logger.error('Invalid or missing refresh token', err);
       throw new UnauthorizedException('Invalid Refresh token');
     }
+
+    const userExists = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+
+    if (!userExists) {
+      throw new BadRequestException('User does not exist');
+    }
+
+    const expiresIn = 15000; // seconds
+    const expiration = Math.floor(Date.now() / 1000) + expiresIn;
+    const accessToken = this.jwtService.sign(
+      { ...payload, exp: expiration },
+      {
+        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
+      },
+    );
+
+    res.cookie(this.access_cookie_name, accessToken, { httpOnly: true });
+    return accessToken;
   }
 
-  private async issueTokens(user: User, response: Response) {
-    const payload = { username: user.name, sub: user.id };
+  private async issueTokens(user: UserResponseStrict, response: Response) {
+    const payload = { name: user.name, sub: user.id };
     const [accessToken, refreshtoken] = await Promise.all([
       this.jwtService.signAsync(
         { ...payload },
@@ -81,10 +88,11 @@ export class AuthService {
 
     response.cookie(this.access_cookie_name, accessToken, { httpOnly: true });
     response.cookie(this.refresh_cookie_name, refreshtoken, { httpOnly: true });
+    this.logger.log(user);
     return { user };
   }
 
-  async validateUser(loginDto: LoginInputDto) {
+  async validateUser(loginDto: LoginDto) {
     const user = await this.prisma.user.findUnique({
       where: { email: loginDto.email },
     });
@@ -95,29 +103,32 @@ export class AuthService {
     return null;
   }
 
-  async register(registerDto: RegisterInputDto, response: Response) {
+  async register(registerDto: RegisterDto, response: Response) {
+    console.log('register has been called');
+    console.log(registerDto.email);
     const existingUser = await this.prisma.user.findUnique({
       where: { email: registerDto.email },
     });
-
+    console.log(existingUser);
     if (existingUser) {
       throw new Error('Email already in use');
     }
 
-    const hashedPassword = bcrypt.hashSync(registerDto.password, 10);
+    const salt = bcrypt.genSaltSync();
+    const passwordHash = await bcrypt.hash(registerDto.password, salt);
 
     const user = await this.prisma.user.create({
       data: {
         name: registerDto.name,
         email: registerDto.email,
-        password: hashedPassword,
+        password: passwordHash,
       },
     });
 
     return this.issueTokens(user, response);
   }
 
-  async login(loginDto: LoginInputDto, response: Response) {
+  async login(loginDto: LoginDto, response: Response) {
     const user = await this.validateUser(loginDto);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

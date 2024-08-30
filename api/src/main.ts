@@ -2,6 +2,7 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { GraphQLErrorFilter } from './filters/custom-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,7 +10,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'https://studio.apollographql.com',
-      'htpp://localhost',
+      // 'http://localhost',
     ],
     credentials: true,
     allowedHeaders: [
@@ -19,14 +20,16 @@ async function bootstrap() {
       'X-Requested-With',
       'apollo-require-preflight',
     ],
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
   });
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
+      // whitelist: true,
       transform: true,
-      exceptionFactory: (errors) => {
+      // forbidNonWhitelisted: true,
+      transformOptions: { enableImplicitConversion: true },
+      exceptionFactory(errors) {
         const formattedErrors = errors.reduce((accumulator, error) => {
           accumulator[error.property] = Object.values(error.constraints).join(
             ', ',
@@ -38,6 +41,7 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalFilters(new GraphQLErrorFilter());
   await app.listen(3000);
 }
 bootstrap();

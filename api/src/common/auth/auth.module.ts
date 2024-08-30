@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { AuthService } from './auth.service';
 
 @Module({
-  providers: [AuthService, JwtService, PrismaService, ConfigService],
+  providers: [AuthService, JwtService, ConfigService],
+  exports: [AuthService],
 })
 export class AuthModule {}

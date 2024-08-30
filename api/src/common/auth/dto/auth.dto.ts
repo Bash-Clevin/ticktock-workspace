@@ -2,9 +2,9 @@ import { Field, InputType, PickType } from '@nestjs/graphql';
 import { User } from 'src/models/user/entity/user.entity';
 
 @InputType()
-export class RegisterInputDto extends PickType(
+export class RegisterDto extends PickType(
   User,
-  ['name', 'password', 'email'],
+  ['email', 'password', 'name'],
   InputType,
 ) {
   @Field()
@@ -12,7 +12,4 @@ export class RegisterInputDto extends PickType(
 }
 
 @InputType()
-export class LoginInputDto extends PickType(RegisterInputDto, [
-  'email',
-  'password',
-]) {}
+export class LoginDto extends PickType(RegisterDto, ['email', 'password']) {}

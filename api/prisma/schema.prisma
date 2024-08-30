@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
@@ -23,43 +17,42 @@ model User {
   password  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  Posts     Post[]
   Comments  Comment[]
   Likes     Like[]
+  Posts     Post[]
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   text      String
   video     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  userId   Int
-  User     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Comments Comment[]
-  Likes    Like[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  userId    Int
+  Comments  Comment[]
+  Likes     Like[]
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
   id        Int      @id @default(autoincrement())
   userId    Int
   postId    Int
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Like {
   id        Int      @id @default(autoincrement())
   userId    Int
   postId    Int
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   crearedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
 }

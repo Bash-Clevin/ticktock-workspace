@@ -7,28 +7,28 @@ type ErrorType {
   message: String!
 }
 
-input LoginInputDto {
+input LoginDto {
   email: String!
   password: String!
 }
 
 type LoginResponse {
   error: ErrorType
-  user: UserResponseStrict
+  user: UserResponseStrict!
 }
 
 type Mutation {
-  login(loginInput: LoginInputDto!): LoginResponse!
+  login(loginInput: LoginDto!): LoginResponse!
   logout: String!
   refreshToken: String!
-  register(registerInput: RegisterInputDto!): RegisterResponse!
+  register(registerInput: RegisterDto!): RegisterResponse!
 }
 
 type Query {
   hello: String!
 }
 
-input RegisterInputDto {
+input RegisterDto {
   confirmPassword: String!
   email: String!
   name: String!
