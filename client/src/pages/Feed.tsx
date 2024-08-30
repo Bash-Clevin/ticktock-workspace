@@ -1,5 +1,7 @@
+import MainLayout from '../layouts/MainLayout';
+
 const Feed = () => {
-  return <div>Feed</div>;
+  return <MainLayout>Feed</MainLayout>;
 };
 
 export default Feed;
