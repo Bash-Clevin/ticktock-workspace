@@ -26,19 +26,8 @@ export class UserResolver {
       });
     }
 
-    try {
-      const { user } = await this.authService.register(
-        registerDto,
-        context.res,
-      );
-      return { user };
-    } catch (error) {
-      return {
-        error: {
-          message: error.message,
-        },
-      };
-    }
+    const { user } = await this.authService.register(registerDto, context.res);
+    return { user };
   }
 
   @Mutation(() => LoginResponse)

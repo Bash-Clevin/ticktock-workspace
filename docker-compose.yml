@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USERNAME: postgres
-      POSTGRES_DB: ticktock
+      POSTGRES_DB: ticktok
     ports:
       - 5432:5432
     networks:
@@ -26,12 +26,25 @@ services:
       - ticktok-workspace
     ports:
       - 3000:3000
+      - 5555:5555
     depends_on:
       - postgres
-    command: [sh, -c, 'npm run start:dev']
+    command: >
+      sh -c "
+        echo 'Waiting for postgres...'
+        while ! nc -z postgres 5432; do
+          sleep 1
+        done
+        echo 'migrating db'
+        npx prisma migrate dev
+        echo 'PostgreSQL started'
+        npm run start:dev
+      "
     volumes:
       - ./api/:/app
       - /app/node_modules
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/ticktok?schema=public
 
   ticktok-client:
     container_name: ticktok-client-dev

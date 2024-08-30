@@ -104,14 +104,12 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto, response: Response) {
-    console.log('register has been called');
-    console.log(registerDto.email);
     const existingUser = await this.prisma.user.findUnique({
       where: { email: registerDto.email },
     });
     console.log(existingUser);
     if (existingUser) {
-      throw new Error('Email already in use');
+      throw new BadRequestException({ email: 'Email already in use' });
     }
 
     const salt = bcrypt.genSaltSync();
@@ -131,7 +129,9 @@ export class AuthService {
   async login(loginDto: LoginDto, response: Response) {
     const user = await this.validateUser(loginDto);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new BadRequestException({
+        invalidCredentials: 'Invalid credentials',
+      });
     }
 
     return this.issueTokens(user, response);

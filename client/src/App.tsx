@@ -1,5 +1,11 @@
+import AuthModal from './components/AuthModal';
+
 function App() {
-  return <div className="bg-red-500">Hello</div>;
+  return (
+    <div>
+      <AuthModal />
+    </div>
+  );
 }
 
 export default App;

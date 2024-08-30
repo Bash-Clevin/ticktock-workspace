@@ -4,6 +4,7 @@ ARG IMAGE=node:20-alpine3.19
 FROM ${IMAGE} as builder
 WORKDIR /app
 COPY . .
+RUN 
 RUN npm i 
 
 # DEVELOPMENT

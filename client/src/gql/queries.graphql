@@ -1,4 +1,4 @@
-mutation Register($registerInput: RegisterInputDto!) {
+mutation Register($registerInput: RegisterDto!) {
   register(registerInput: $registerInput) {
     user {
       id
@@ -8,7 +8,7 @@ mutation Register($registerInput: RegisterInputDto!) {
   }
 }
 
-mutation Login($loginInput: LoginInputDto!) {
+mutation Login($loginInput: LoginDto!) {
   login(loginInput: $loginInput) {
     user {
       image
