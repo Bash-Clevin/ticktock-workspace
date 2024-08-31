@@ -2,7 +2,11 @@ import { BadRequestException, UseFilters } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/common/auth/auth.service';
-import { LoginResponse, RegisterResponse } from 'src/common/auth/auth.types';
+import {
+  LoginResponse,
+  RegisterResponse,
+  UserResponseStrict,
+} from 'src/common/auth/auth.types';
 import { LoginDto, RegisterDto } from 'src/common/auth/dto/auth.dto';
 import { GraphQLErrorFilter } from 'src/filters/custom-exception.filter';
 import { UserService } from './user.service';
@@ -50,6 +54,11 @@ export class UserResolver {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  @Query(() => [UserResponseStrict])
+  async getUsers() {
+    return this.userService.getUsers();
   }
 
   @Query(() => String)
