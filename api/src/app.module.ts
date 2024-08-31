@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './common/auth/auth.module';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { UserModule } from './models/user/user.module';
+import { PostModule } from './models/post/post.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UserModule } from './models/user/user.module';
     PrismaModule,
     AuthModule,
     UserModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

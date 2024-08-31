@@ -1,17 +1,12 @@
-import React, {
-  ChangeEvent,
-  Children,
-  DragEvent,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import UploadLayout from '../layouts/UploadLayout';
 import { useMutation } from '@apollo/client';
-import UploadError from '../components/UploadError';
+import { GraphQLErrorExtensions } from 'graphql';
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from 'react';
 import { FiUploadCloud } from 'react-icons/fi';
-import { IoCheckmarkDoneCircleOutline } from 'react-icons/io5';
 import { GiBoxCutter } from 'react-icons/gi';
+import { IoCheckmarkDoneCircleOutline } from 'react-icons/io5';
+import UploadError from '../components/UploadError';
+import { CreatePostDocument } from '../gql/generated';
+import UploadLayout from '../layouts/UploadLayout';
 
 function Upload() {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -25,21 +20,31 @@ function Upload() {
 
   const [show, setShow] = useState(false);
   const [fileData, setFileData] = useState<File | null>(null);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<GraphQLErrorExtensions>();
   const [caption, setCaption] = useState<string>('');
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
-  // const [createPost, { loading }] = useMutation();
+  const [createPost, { loading }] = useMutation(CreatePostDocument, {
+    onError: (err) => {
+      setErrors(err.graphQLErrors[0].extensions);
+    },
+    variables: {
+      text: caption,
+      video: fileData,
+    },
+  });
 
   const handleCreatePost = async () => {
     try {
       setIsUploading(true);
-      // await createPost()
+      await createPost();
       setIsUploading(false);
       setShow(true);
       clearVideo();
-    } catch (error) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const [errorType, setErrorType] = useState<string | null>(null);
@@ -227,7 +232,7 @@ function Upload() {
                     <button
                       className="px-10 py-2.5 mt-8 border text-[16px]
                    text-white bg-[#F02C56] rounded-sm"
-                      onClick={discard}
+                      onClick={handleCreatePost}
                     >
                       Post
                     </button>
