@@ -6,7 +6,7 @@ export interface User {
   name?: string;
   email?: string;
   bio?: string;
-  image?: string;
+  image?: string | null | undefined;
 }
 
 export interface UserActions {

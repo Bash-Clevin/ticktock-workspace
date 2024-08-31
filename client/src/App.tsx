@@ -1,11 +1,9 @@
 import AuthModal from './components/AuthModal';
+import { useGeneralStore } from './store/generalStore';
 
 function App() {
-  return (
-    <div>
-      <AuthModal />
-    </div>
-  );
+  const isLoginOpen = useGeneralStore((state) => state.isLoginOpen);
+  return <div>{isLoginOpen && <AuthModal />}</div>;
 }
 
 export default App;

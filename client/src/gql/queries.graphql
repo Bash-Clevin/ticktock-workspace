@@ -21,3 +21,12 @@ mutation Login($loginInput: LoginDto!) {
 mutation Logout {
   logout
 }
+
+query GetUsers {
+  getUsers {
+    id
+    name
+    image
+    email
+  }
+}

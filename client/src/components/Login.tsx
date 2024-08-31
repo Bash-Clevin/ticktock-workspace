@@ -7,7 +7,7 @@ import { useUserStore } from '../store/userStore';
 import Input from './Input';
 
 const Login = () => {
-  const [loginUser, { loading, eror, data }] =
+  const [loginUser, { loading, error, data }] =
     useMutation<LoginMutation>(LoginDocument);
 
   const setUser = useUserStore((state) => state.setUser);
@@ -22,28 +22,30 @@ const Login = () => {
 
   const handleLogin = async () => {
     setErrors({});
-
-    await loginUser({
-      variables: {
-        loginInput: loginData,
-      },
-    }).catch((err) => {
-      if (err.graphQLErrors[0].extensions?.invalidCredentials) {
-        setInvalidCredentials(
-          err.graphQLErrors[0].extensions?.invalidCredentials,
-        );
-      }
-      setErrors(err.graphQLErrors[0].extensions);
-    });
-
-    if (data?.login.user) {
-      setUser({
-        id: data?.login.user.id,
-        email: data?.login.user.email,
+    try {
+      const response = await loginUser({
+        variables: {
+          loginInput: loginData,
+        },
       });
-      setIsLoginOpen(false);
+
+      if (response.data) {
+        setUser({
+          id: response.data?.login.user.id,
+          email: response.data.login.user.email,
+          image: response.data.login.user.image,
+        });
+        setIsLoginOpen(false);
+      }
+    } catch (_) {
+      if (error && error.graphQLErrors[0].extensions?.invalidCredentials)
+        setInvalidCredentials(
+          error.graphQLErrors[0].extensions?.invalidCredentials as string,
+        );
+      else if (error) setErrors(error.graphQLErrors[0].extensions);
     }
   };
+
   return (
     <>
       <div className="text-center text-[20px] mb-4 font-bold">Sign In</div>
@@ -80,7 +82,7 @@ const Login = () => {
         </span>
         <button
           onClick={handleLogin}
-          disabled={!loginData.email || !loginData.password}
+          disabled={!loginData.email || !loginData.password || loading}
           className={[
             'mt-6 w-full text-[17px] font-semibold text-white py-3 rounded-sm',
             !loginData.email || !loginData.password
