@@ -56,3 +56,74 @@ query GetPosts($skip: Int!, $take: Int!) {
     }
   }
 }
+
+mutation CreateComment($postId: Float!, $text: String!) {
+  createComment(postId: $postId, text: $text) {
+    id
+    text
+    createdAt
+    User {
+      id
+      name
+      email
+    }
+    Post {
+      id
+      text
+      video
+    }
+  }
+}
+
+mutation DeleteComment($deleteCommentId: Float!) {
+  deleteComment(id: $deleteCommentId) {
+    id
+  }
+}
+
+mutation LikePost($postId: Float!) {
+  likePost(postId: $postId) {
+    id
+    postId
+    userId
+  }
+}
+
+mutation UnLikePost($postId: Float!) {
+  unLikePost(postId: $postId) {
+    id
+    postId
+    userId
+  }
+}
+
+query GetCommentByPostId($postId: Float!) {
+  getCommentByPostId(postId: $postId) {
+    id
+    text
+    createdAt
+    User {
+      id
+      name
+      email
+    }
+    Post {
+      id
+      text
+      video
+    }
+  }
+}
+
+query GetPostsByUserId($userId: Float!) {
+  getPostsByUserId(userId: $userId) {
+    id
+    text
+    video
+    User {
+      name
+      email
+      id
+    }
+  }
+}
