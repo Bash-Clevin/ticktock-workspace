@@ -78,6 +78,7 @@ mutation CreateComment($postId: Float!, $text: String!) {
 mutation DeleteComment($deleteCommentId: Float!) {
   deleteComment(id: $deleteCommentId) {
     id
+    __typename
   }
 }
 
@@ -106,6 +107,7 @@ query GetCommentByPostId($postId: Float!) {
       id
       name
       email
+      image
     }
     Post {
       id
@@ -125,5 +127,26 @@ query GetPostsByUserId($userId: Float!) {
       email
       id
     }
+  }
+}
+
+query GetPostById($getPostByIdId: Float!) {
+  getPostById(id: $getPostByIdId) {
+    id
+    text
+    video
+    createdAt
+    User {
+      id
+      email
+      name
+      image
+    }
+    Likes {
+      id
+      postId
+      userId
+    }
+    otherPostIds
   }
 }

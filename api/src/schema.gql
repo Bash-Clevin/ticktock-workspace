@@ -53,6 +53,7 @@ type Mutation {
 type Post {
   Likes: [Like!]
   User: User!
+  createdAt: DateTime!
   id: Int!
   text: String!
   video: String!
@@ -61,6 +62,7 @@ type Post {
 type PostDetails {
   Likes: [Like!]
   User: User!
+  createdAt: DateTime!
   id: Int!
   otherPostIds: [Float!]
   text: String!

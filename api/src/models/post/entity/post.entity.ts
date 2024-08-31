@@ -10,6 +10,8 @@ export class Post {
   text: string;
   @Field()
   video: string;
+  @Field()
+  createdAt: Date;
   @Field(() => User)
   User: User;
   @Field(() => [Like], { nullable: true })
