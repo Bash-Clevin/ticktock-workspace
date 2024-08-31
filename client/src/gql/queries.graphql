@@ -38,3 +38,21 @@ mutation CreatePost($text: String!, $video: Upload!) {
     video
   }
 }
+
+query GetPosts($skip: Int!, $take: Int!) {
+  getPosts(skip: $skip, take: $take) {
+    id
+    text
+    video
+    User {
+      id
+      name
+      email
+    }
+    Likes {
+      id
+      userId
+      postId
+    }
+  }
+}

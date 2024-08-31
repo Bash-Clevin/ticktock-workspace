@@ -10,9 +10,14 @@ import { AuthModule } from './common/auth/auth.module';
 import { PrismaModule } from './common/prisma/prisma.module';
 import { UserModule } from './models/user/user.module';
 import { PostModule } from './models/post/post.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/',
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({
       global: true,

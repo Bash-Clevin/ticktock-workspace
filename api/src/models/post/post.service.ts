@@ -7,7 +7,6 @@ import { Post as PostType, Prisma } from '@prisma/client';
 import { createWriteStream, unlinkSync } from 'fs';
 import { extname } from 'path';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { CreatePostDto } from './dto/post.dto';
 import { Post, PostDetails } from './entity/post.entity';
 
 @Injectable()
