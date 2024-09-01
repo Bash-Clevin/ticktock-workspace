@@ -34,6 +34,8 @@ const Login = () => {
           id: response.data?.login.user.id,
           email: response.data.login.user.email,
           image: response.data.login.user.image,
+          bio: response.data.login.user.bio,
+          name: response.data.login.user.name,
         });
         setIsLoginOpen(false);
       }

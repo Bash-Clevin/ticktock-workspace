@@ -13,6 +13,8 @@ mutation Login($loginInput: LoginDto!) {
     user {
       image
       email
+      name
+      bio
       id
     }
   }
@@ -149,5 +151,14 @@ query GetPostById($getPostByIdId: Float!) {
       userId
     }
     otherPostIds
+  }
+}
+
+mutation UpdatedUserProfile($bio: String, $image: Upload, $name: String) {
+  updatedUserProfile(bio: $bio, image: $image, name: $name) {
+    id
+    name
+    bio
+    image
   }
 }

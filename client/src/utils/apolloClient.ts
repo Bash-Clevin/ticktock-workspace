@@ -8,6 +8,7 @@ import {
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+import { useUserStore } from '../store/userStore';
 
 async function refreshToken(client: ApolloClient<NormalizedCacheObject>) {
   try {
@@ -35,8 +36,19 @@ const maxRetry = 3;
 
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
   if (graphQLErrors) {
+    console.log(graphQLErrors);
     for (const err of graphQLErrors) {
+      console.log(err);
       if (err.extensions!.code === 'UNAUTHENTICATED' && retryCount < maxRetry) {
+        if (err.extensions!.originalError!.message === 'Unauthorized') {
+          useUserStore.setState({
+            id: undefined,
+            name: '',
+            email: '',
+            bio: '',
+            image: '',
+          });
+        }
         retryCount++;
         return new Observable((observer) => {
           refreshToken(client)

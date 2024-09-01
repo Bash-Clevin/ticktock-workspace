@@ -76,9 +76,8 @@ export class UserResolver {
     image?: GraphQLUpload,
   ) {
     let imageUrl;
-    if (image) await this.storeImageAndGetUrl(image);
-
-    return this.userService.updateProfile(context.req.user.sub, {
+    if (image) imageUrl = await this.storeImageAndGetUrl(image);
+    return await this.userService.updateProfile(context.req.user.sub, {
       name,
       bio,
       image: imageUrl,

@@ -5,7 +5,7 @@ export interface User {
   id?: number;
   name?: string;
   email?: string;
-  bio?: string;
+  bio?: string | null;
   image?: string | null | undefined;
 }
 

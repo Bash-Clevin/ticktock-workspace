@@ -40,7 +40,7 @@ const PostFeed = ({ post }: { post: Post }) => {
           </button>
         </div>
         <div className="text-[15px] pb-0.5 break-words md:max-w-[480px] max-w-[360px]">
-          This is some text
+          {post.text}
         </div>
         <div className="text-[14px] text-gray-500 pb-0.5">
           #fun #cool #superAwesome

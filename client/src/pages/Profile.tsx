@@ -1,12 +1,12 @@
-import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { GetPostsByUserIdDocument, Post } from '../gql/generated';
-import { useUserStore } from '../store/userStore';
-import MainLayout from '../layouts/MainLayout';
-import { BsFillPencilFill } from 'react-icons/bs';
-import { useGeneralStore } from '../store/generalStore';
 import { AiFillUnlock } from 'react-icons/ai';
+import { BsFillPencilFill } from 'react-icons/bs';
+import { useParams } from 'react-router-dom';
 import PostProfile from '../components/PostProfile';
+import { GetPostsByUserIdDocument } from '../gql/generated';
+import MainLayout from '../layouts/MainLayout';
+import { useGeneralStore } from '../store/generalStore';
+import { useUserStore } from '../store/userStore';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();

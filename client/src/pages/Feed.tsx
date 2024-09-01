@@ -18,15 +18,15 @@ const Feed = () => {
           skip: data?.getPosts.length || 0,
           take: 2,
         },
-        // updateQuery: (prev, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) return prev;
-        //   const newPosts = fetchMoreResult.getPosts.filter(
-        //     (newPost) => !prev.getPosts.some((post) => post.id === newPost.id),
-        //   );
-        //   return {
-        //     getPosts: [...prev.getPosts, ...newPosts],
-        //   };
-        // },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          const newPosts = fetchMoreResult.getPosts.filter(
+            (newPost) => !prev.getPosts.some((post) => post.id === newPost.id),
+          );
+          return {
+            getPosts: [...prev.getPosts, ...newPosts],
+          };
+        },
       });
     } catch (err) {
       console.log(err);
