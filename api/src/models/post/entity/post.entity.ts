@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { UserResponseStrict } from 'src/common/auth/auth.types';
 import { Like } from 'src/models/like/entity/like.entity';
-import { User } from 'src/models/user/entity/user.entity';
 
 @ObjectType()
 export class Post {
@@ -12,8 +12,8 @@ export class Post {
   video: string;
   @Field()
   createdAt: Date;
-  @Field(() => User)
-  User: User;
+  @Field(() => UserResponseStrict)
+  User: UserResponseStrict;
   @Field(() => [Like], { nullable: true })
   Likes?: Like[];
 }

@@ -122,6 +122,7 @@ query GetPostsByUserId($userId: Float!) {
     id
     text
     video
+    createdAt
     User {
       name
       email

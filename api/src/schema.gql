@@ -4,7 +4,7 @@
 
 type Comment {
   Post: Post!
-  User: User!
+  User: UserResponseStrict!
   createdAt: DateTime!
   id: Int!
   text: String!
@@ -52,7 +52,7 @@ type Mutation {
 
 type Post {
   Likes: [Like!]
-  User: User!
+  User: UserResponseStrict!
   createdAt: DateTime!
   id: Int!
   text: String!
@@ -61,7 +61,7 @@ type Post {
 
 type PostDetails {
   Likes: [Like!]
-  User: User!
+  User: UserResponseStrict!
   createdAt: DateTime!
   id: Int!
   otherPostIds: [Float!]
@@ -92,17 +92,6 @@ type RegisterResponse {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-type User {
-  bio: String
-  createdAt: DateTime!
-  email: String!
-  id: Float!
-  image: String
-  name: String!
-  password: String!
-  updatedAt: DateTime!
-}
 
 type UserResponseStrict {
   bio: String

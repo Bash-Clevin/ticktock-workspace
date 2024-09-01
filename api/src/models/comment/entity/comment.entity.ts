@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { UserResponseStrict } from 'src/common/auth/auth.types';
 import { Post } from 'src/models/post/entity/post.entity';
-import { User } from 'src/models/user/entity/user.entity';
 
 @ObjectType()
 export class Comment {
@@ -10,8 +10,8 @@ export class Comment {
   @Field()
   text: string;
 
-  @Field(() => User)
-  User: User;
+  @Field(() => UserResponseStrict)
+  User: UserResponseStrict;
 
   @Field(() => Post)
   Post: Post;

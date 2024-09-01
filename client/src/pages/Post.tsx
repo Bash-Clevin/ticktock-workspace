@@ -1,5 +1,10 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useRef, useState } from 'react';
+import { AiFillHeart, AiFillPlayCircle } from 'react-icons/ai';
+import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
+import { BsFillChatDotsFill, BsMusicNoteBeamed } from 'react-icons/bs';
+import { ImCross, ImSpinner2 } from 'react-icons/im';
+import { MdOutlineDeleteForever } from 'react-icons/md';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   CreateCommentDocument,
@@ -12,11 +17,6 @@ import {
 } from '../gql/generated';
 import { usePostStore } from '../store/postStore';
 import { useUserStore } from '../store/userStore';
-import { ImCross, ImSpinner, ImSpinner2 } from 'react-icons/im';
-import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
-import { AiFillHeart, AiFillPlayCircle } from 'react-icons/ai';
-import { MdOutlineDeleteForever } from 'react-icons/md';
-import { BsFillChatDotsFill, BsMusicNoteBeamed } from 'react-icons/bs';
 
 const Post = () => {
   const { id } = useParams<{ id: string }>();
